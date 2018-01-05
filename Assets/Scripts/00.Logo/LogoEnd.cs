@@ -4,8 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LogoEnd : MonoBehaviour {
-    // Use this for initialization
-
+ 
     void Awake()
     {
         //Cursor.lockState = CursorLockMode.Locked;
@@ -14,20 +13,23 @@ public class LogoEnd : MonoBehaviour {
 
 	void Start ()
     {
-		Invoke("changeToTitleScene", 9);
+        Invoke("changeToTitleScene",9);
 	}
-
-    private void changeToTitleScene()
-    {
-		print ("change to Title Scene");
-        Cursor.visible = true;
-        SceneManager.LoadScene("01.Title");
-    }
 	
 	// Update is called once per frame
 	void Update ()
     {
         if (Input.GetKey("escape"))
-            changeToTitleScene();
+        {
+            Cursor.visible = true;
+            SceneManager.LoadScene("01.Title");     
+        }
+    }
+
+    private void changeToTitleScene()
+    {
+        print("change to Title Scene");
+        Cursor.visible = true;
+        SceneManager.LoadScene("01.Title");
     }
 }
