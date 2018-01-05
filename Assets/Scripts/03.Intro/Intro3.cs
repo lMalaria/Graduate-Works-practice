@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Intro3 : MonoBehaviour {
 
-    [SerializeField] private float Timer;
-    [SerializeField] private float MovieTime;
-
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -16,18 +13,20 @@ public class Intro3 : MonoBehaviour {
 
     void Start()
     {
-
+        Invoke("changeToFourthIntro", 80);
     }
-
 
     void Update()
     {
-        Timer += Time.deltaTime;
-
-        if (Timer > 66.0f)
-            SceneManager.LoadScene("06.Stage1");
-
         if (Input.GetKey("escape"))
-            SceneManager.LoadScene("06.Stage1");
+        {
+            Cursor.visible = true;
+            SceneManager.LoadScene("06.Intro4");
+        }
+    }
+
+    private void changeToFourthIntro()
+    {
+        SceneManager.LoadScene("06.Intro4");
     }
 }

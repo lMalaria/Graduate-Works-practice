@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Intro1 : MonoBehaviour {
 
-	
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -14,19 +13,17 @@ public class Intro1 : MonoBehaviour {
 
 	void Start ()
     {
-        StartCoroutine(IntroEnd());
+        Invoke("changeToSecondIntro", 77);
 	}
-	
-	
+
 	void Update ()
     {
 		if(Input.GetKey("escape"))
             SceneManager.LoadScene("04.Intro2");
 	}
 
-    IEnumerator IntroEnd()
+    private void changeToSecondIntro()
     {
-        yield return new WaitForSeconds(77.0f);
         SceneManager.LoadScene("04.Intro2");
     }
 }
