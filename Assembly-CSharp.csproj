@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{5D7A9588-4171-E2E5-DC98-AB8271E09D4C}</ProjectGuid>
+    <ProjectGuid>{8F89F88E-7780-DB35-7635-A09D1D80AADE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -48,14 +48,11 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\00.Logo\LogoEnd.cs" />
      <Compile Include="Assets\Scripts\01.Menu\MenuButton.cs" />
-     <Compile Include="Assets\Scripts\02.Editor\Camera\EditorCamera.cs" />
-     <Compile Include="Assets\Scripts\02.Editor\Functions\Invisible\Follow.cs" />
-     <Compile Include="Assets\Scripts\02.Editor\Functions\MapEditor.cs" />
+     <Compile Include="Assets\Scripts\02.Editor\EditorCamera.cs" />
+     <Compile Include="Assets\Scripts\02.Editor\MapEditor.cs" />
      <Compile Include="Assets\Scripts\03.Intro\Intro1.cs" />
      <Compile Include="Assets\Scripts\03.Intro\Intro2.cs" />
      <Compile Include="Assets\Scripts\03.Intro\Intro3.cs" />
-     <Compile Include="Assets\Scripts\03.Intro\Intro4.cs" />
-     <Compile Include="Assets\Scripts\Default\01.Player\Camera\PlayerCameraTest.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\NewPlayer.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\PlayerCamera.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\PlayerMove.cs" />

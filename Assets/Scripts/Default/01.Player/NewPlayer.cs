@@ -9,7 +9,6 @@ public class NewPlayer : MonoBehaviour {
     [SerializeField] private float rotateVel;
     [SerializeField] private float forwardInput;
     [SerializeField] private float turnInput;
-
     //[SerializeField] private Animator animator;
 
     Quaternion targetRotation;
@@ -17,13 +16,24 @@ public class NewPlayer : MonoBehaviour {
 
 
 
+
+
+    //public Quaternion TargetRotation
+
+    //{
+
+    //    get {return targetRotation; }
+
+    //}
+
+
+
     void Awake()
     {
-        inputDelay = 0.3f;
-        forwardVel = 5.0f;
+        inputDelay = 0.1f;
+        forwardVel = 12.0f;
         rotateVel = 100.0f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //animator = GetComponent<Animator>();
     }
 
 
@@ -63,7 +73,7 @@ public class NewPlayer : MonoBehaviour {
         if (Mathf.Abs(forwardInput) > inputDelay)
         {
 
-            rb.velocity = transform.forward * forwardInput * forwardVel;
+            rb.velocity = -transform.up * forwardInput * forwardVel;
 
         }
 
@@ -82,31 +92,9 @@ public class NewPlayer : MonoBehaviour {
     void Turn()
     {
 
-        targetRotation *= Quaternion.AngleAxis(rotateVel * turnInput * Time.deltaTime, -Vector3.up);
+        targetRotation *= Quaternion.AngleAxis(rotateVel * turnInput * Time.deltaTime, -Vector3.forward);
 
         transform.rotation = targetRotation;
-
-    }
-
-    enum CurrentWeaponState
-    {
-        HAND_GUN = 0,
-        SHOT_GUN,
-        MACHINE_GUN,
-        SNIPER_RIFLE,
-        BAZOOKA
-    }
-
-    enum PlayerAnimationState
-    {
-        IDLE,
-        WALK,
-        RUN,
-        AIMING,
-        RELOADING,
-        SHOOT,
-        HIT,
-        DEAD
 
     }
 }

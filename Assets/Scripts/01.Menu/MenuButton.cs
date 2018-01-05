@@ -10,6 +10,7 @@ public class MenuButton : MonoBehaviour {
 	
     void Awake()
     {
+        Timer = 0.0f;
         Cursor.visible = true;
     }
 
