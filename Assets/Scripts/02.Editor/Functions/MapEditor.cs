@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.EventSystems;
@@ -20,10 +21,13 @@ public class MapEditor : MonoBehaviour
 
     [SerializeField]
     private GameObject[] prefabsOnMouse;
+
     [SerializeField]
     private GameObject[] prefabsOccupied;
+
     [SerializeField]
     private Button[] buttonPrefabs;
+
     [SerializeField]
     private GameObject savingPanel;
 
@@ -56,30 +60,17 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
-
-    public void ShowUIPrefabs()
+    static int string2ObjectType(string name)
     {
-        
-
-        GameObject currentPrefab = null;
-
-        for (int i = 0; i < (int)ObjectType.Ashley; i++)
-        { 
-            var name = prefabsOccupied[i].name;
-
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                if (buttonPrefabs[i].tag == name)
-                {
-                    currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)");
-                    if(currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)"))
-                        return;
-                    else
-                        Instantiate(prefabsOnMouse[i], new Vector3(0, 0, 0), Quaternion.identity);
-                }
-            }
-        }
-
+        return (int)Enum.Parse( typeof(ObjectType), name);
+    }
+    
+    public void OnClick()
+    {
+        var currentPrefab = EventSystem.current.currentSelectedGameObject;
+        var name = currentPrefab.name;
+        if (GameObject.Find( name + "OnMouse(Clone)") ) return;
+        Instantiate( prefabsOnMouse[ string2ObjectType(name) ], new Vector3(0, 0, 0), Quaternion.identity );
     }
 
     void Awake()
