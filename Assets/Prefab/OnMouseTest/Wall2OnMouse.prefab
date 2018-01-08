@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23830977592267992}
   - component: {fileID: 114223146342797000}
   m_Layer: 0
-  m_Name: SecondWallOnMouse
+  m_Name: Wall2OnMouse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

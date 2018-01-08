@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Follow : MonoBehaviour {
 
-    private float distance = 8.0f;
+    private float distance = 15.0f;
 
     // Use this for initialization
     void Start () {

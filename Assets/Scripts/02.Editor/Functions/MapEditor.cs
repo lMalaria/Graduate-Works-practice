@@ -19,13 +19,13 @@ public class MapEditor : MonoBehaviour
     private int gridSizeZ;
 
     [SerializeField]
-    private GameObject[] prefabOnMouse;
+    private GameObject[] prefabsOnMouse;
     [SerializeField]
-    private GameObject[] prefabOccupied;
-    //[SerializeField]
-    //private Button[] prefabButton;
+    private GameObject[] prefabsOccupied;
     [SerializeField]
-    private GameObject SavePanel;
+    private Button[] buttonPrefabs;
+    [SerializeField]
+    private GameObject savingPanel;
 
     enum TileType
     {
@@ -57,46 +57,30 @@ public class MapEditor : MonoBehaviour
     private EditorCamera cameraMovementControl;
 
 
-    public void BarrelClick()
+    public void ShowUIPrefabs()
     {
-        //Ray ray;
-        //RaycastHit hit;
-        //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        //if (Physics.Raycast(ray, out hit, 150))
-        //{
-        //    //Debug.DrawRay(ray.origin, hit.point, Color.green);
-        //if (transform.tag.Equals("Barrel"))
-        //{
-        //    Instantiate(prefabOnMouse[(int)ObjectType.Barrel], new Vector3(0, 0, 0), Quaternion.identity);
-        //}
-        //if (transform.tag.Equals("Fence"))
-        //{
-        //    Instantiate(prefabOnMouse[(int)ObjectType.Fence], new Vector3(0, 0, 0), Quaternion.identity);
-        //}
-        //}
-
-        //List<string> willBeDestroyedType = new List<string>() { "Barrel", "Fence", "Wall1", "Wall2", "CivilianZombie1", "CivilianZombie2", "HoundZombie", "SawZombie", "Leon", "Ashley"};
-        //GameObject[] willBeDestroyed = new GameObject[( (int)ObjectType.Ashley - 1)];
         
-        //if (transform.tag == transform.name)
-        //{
-        //    willBeDestroyedType.Remove();
 
-        //    for (int i = 0; i < (int)ObjectType.Ashley - 1; i++)
-        //    {
-        //        willBeDestroyed[i].tag = willBeDestroyedType[i];
-        //    }
-        //}
+        GameObject currentPrefab = null;
+
+        for (int i = 0; i < (int)ObjectType.Ashley; i++)
+        { 
+            var name = prefabsOccupied[i].name;
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                if (buttonPrefabs[i].tag == name)
+                {
+                    currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)");
+                    if(currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)"))
+                        return;
+                    else
+                        Instantiate(prefabsOnMouse[i], new Vector3(0, 0, 0), Quaternion.identity);
+                }
+            }
+        }
 
     }
-
-    //public void FenceClick()
-    //{
-      
-    //    Instantiate(prefabOnMouse[(int)ObjectType.Fence], new Vector3(0, 0, 0), Quaternion.identity);
-    //}
-
 
     void Awake()
     {
