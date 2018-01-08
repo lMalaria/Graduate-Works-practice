@@ -1,5 +1,5 @@
 Library/
-Library\\
+Library/*
 obj/
 Temp/
 Build/
