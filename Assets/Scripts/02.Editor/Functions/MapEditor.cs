@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.EventSystems;
@@ -20,10 +21,13 @@ public class MapEditor : MonoBehaviour
 
     [SerializeField]
     private GameObject[] prefabsOnMouse;
+
     [SerializeField]
     private GameObject[] prefabsOccupied;
+
     [SerializeField]
     private Button[] buttonPrefabs;
+
     [SerializeField]
     private GameObject savingPanel;
 
@@ -57,29 +61,21 @@ public class MapEditor : MonoBehaviour
     private EditorCamera cameraMovementControl;
 
 
-    public void ShowUIPrefabs()
+    static int ConvertString2ObjectType(string name)
     {
-        
+        return (int)Enum.Parse(typeof(ObjectType), name);
+    }
 
-        GameObject currentPrefab = null;
+    public void OnClick()
+    {
+        for(int i = 0;i < (int)ObjectType.Ashley; i++)
+            Destroy(GameObject.Find(prefabsOnMouse[i].name + "(Clone)"));
 
-        for (int i = 0; i < (int)ObjectType.Ashley; i++)
-        { 
-            var name = prefabsOccupied[i].name;
+        var currentGameObject = EventSystem.current.currentSelectedGameObject;
+        var name = currentGameObject.name;
 
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                if (buttonPrefabs[i].tag == name)
-                {
-                    currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)");
-                    if(currentPrefab = GameObject.Find(buttonPrefabs[i].tag + "OnMouse(Clone)"))
-                        return;
-                    else
-                        Instantiate(prefabsOnMouse[i], new Vector3(0, 0, 0), Quaternion.identity);
-                }
-            }
-        }
-
+        if (GameObject.Find(name + "OnMouse(Clone)")) return;
+        Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)],new Vector3(0,0,0),Quaternion.identity);
     }
 
     void Awake()
@@ -95,8 +91,7 @@ public class MapEditor : MonoBehaviour
 
     void Start()
     {
-        //for (int i = 0; i < (int)ObjectType.Ashley; i++)
-        //    prefabButton[i].onClick.AddListener(Click);
+
     }
 
     void Update()
@@ -115,7 +110,7 @@ public class MapEditor : MonoBehaviour
 
     void FixedUpdate()
     {
-        //Click();
+
     }
 
     void OnMouseDown()
@@ -141,6 +136,7 @@ public class MapEditor : MonoBehaviour
             //        }
             //    }
             //}
+
 
             int cellNum = ChangePos2CellNum(hit.point);
 
