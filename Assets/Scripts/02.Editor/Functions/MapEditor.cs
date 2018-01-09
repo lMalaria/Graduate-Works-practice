@@ -60,7 +60,6 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
-
     static int ConvertString2ObjectType(string name)
     {
         return (int)Enum.Parse(typeof(ObjectType), name);
@@ -68,14 +67,19 @@ public class MapEditor : MonoBehaviour
 
     public void OnClick()
     {
-        for(int i = 0;i < (int)ObjectType.Ashley; i++)
+        for (int i = 0; i < (int)ObjectType.Ashley; i++)
             Destroy(GameObject.Find(prefabsOnMouse[i].name + "(Clone)"));
 
         var currentGameObject = EventSystem.current.currentSelectedGameObject;
         var name = currentGameObject.name;
 
         if (GameObject.Find(name + "OnMouse(Clone)")) return;
-        Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)],new Vector3(0,0,0),Quaternion.identity);
+        Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
+    }
+
+    static int string2ObjectType(string name)
+    {
+        return (int)Enum.Parse( typeof(ObjectType), name);
     }
 
     void Awake()
