@@ -14,8 +14,6 @@ TagManager:
   - SawZombie
   - Leon
   - Ashley
-  - Merchant
-  - Aida
   layers:
   - Default
   - TransparentFX

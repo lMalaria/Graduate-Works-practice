@@ -60,26 +60,16 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
-    static int ConvertString2ObjectType(string name)
-    {
-        return (int)Enum.Parse(typeof(ObjectType), name);
-    }
-
     public void OnClick()
     {
         for (int i = 0; i < (int)ObjectType.Ashley; i++)
             Destroy(GameObject.Find(prefabsOnMouse[i].name + "(Clone)"));
 
-        var currentGameObject = EventSystem.current.currentSelectedGameObject;
-        var name = currentGameObject.name;
+        var currentButton = EventSystem.current.currentSelectedGameObject;
+        var name = currentButton.name;
 
         if (GameObject.Find(name + "OnMouse(Clone)")) return;
-        Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
-    }
-
-    static int string2ObjectType(string name)
-    {
-        return (int)Enum.Parse( typeof(ObjectType), name);
+            Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     void Awake()
@@ -108,8 +98,6 @@ public class MapEditor : MonoBehaviour
         {
             Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0));
         }
-
-
     }
 
     void FixedUpdate()
@@ -141,30 +129,47 @@ public class MapEditor : MonoBehaviour
             //    }
             //}
 
+            //var prefabSelected = GameObject.FindWithTag("Barrel");
 
             int cellNum = ChangePos2CellNum(hit.point);
 
+            for (int i = 0; i < (int)ObjectType.Ashley; i++)
+            {
+                string tagName = ConvertObjectType2String((ObjectType)i);
 
-            //if (prefabSelected == null || isPlaced[cellno] == true) return;
+                if (GameObject.FindWithTag(tagName))
+                    Instantiate(prefabsOccupied[i], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+            }
+
+            //if (GameObject.FindWithTag("Barrel"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Barrel], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+
+            //else if(GameObject.FindWithTag("Fence"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Fence], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+
+
+            //if (prefabSelected == null /*|| isPlaced[cellno] == true*/) return;
             //isPlaced[cellno] = true;
-            //Instantiate(prefabSelected, CellNo2Pos(cellno), Quaternion.identity);
+            //if(prefabSelected == GameObject.FindGameObjectWithTag("Barrel"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Barrel], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Fence"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Fence], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Wall1"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Wall1], ChangeCellNum2Pos(cellNum), Quaternion.identity);
+            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Wall2"))
+            //    Instantiate(prefabsOccupied[(int)ObjectType.Wall2], ChangeCellNum2Pos(cellNum), Quaternion.identity);
             
-
-            //if (isPrefabOnMouse[0] == true)
-            //{
-            //    if (isPlaced[SetgridcellNum(hit.point)] == false)
-            //    {
-            //        Instantiate(prefabPlaced[0], SetCellnumtoPos(SetgridcellNum(hit.point)), Quaternion.identity);
-            //        isPlaced[SetgridcellNum(hit.point)] = true;
-            //    } else if (isPlaced[SetgridcellNum(hit.point)] == true){
-
-            //      }
-            //}
-
-
         }
-        
+    }
 
+    static int ConvertString2ObjectType(string name)
+    {
+        return (int)Enum.Parse(typeof(ObjectType), name);
+    }
+
+    static string ConvertObjectType2String(ObjectType objType)
+    {
+        return objType.ToString();
     }
 
     public int ChangePos2CellNum(Vector3 Point)

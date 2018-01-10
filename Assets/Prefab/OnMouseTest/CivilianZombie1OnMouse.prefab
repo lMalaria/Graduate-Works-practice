@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114980068767299738}
   m_Layer: 0
   m_Name: CivilianZombie1OnMouse
-  m_TagString: Untagged
+  m_TagString: CivilianZombie1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
