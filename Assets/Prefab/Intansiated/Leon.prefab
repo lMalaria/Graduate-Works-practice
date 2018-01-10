@@ -53,6 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4124754414910412}
+  - component: {fileID: 65174755445618168}
   m_Layer: 0
   m_Name: Leon
   m_TagString: Untagged
@@ -599,3 +600,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1784091884508828}
   m_Mesh: {fileID: 4300002, guid: 80e33dba6913d3542b12ffa850a4ac94, type: 3}
+--- !u!65 &65174755445618168
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1138463465732040}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 20, z: 30}
+  m_Center: {x: 0, y: 0, z: 0}

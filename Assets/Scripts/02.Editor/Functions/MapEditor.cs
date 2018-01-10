@@ -60,6 +60,23 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
+    public void UiSlider()
+    {
+        GameObject panelBePopped = GameObject.Find("MovingPanel");
+        bool panelIsShown = true;
+
+        if (panelIsShown == true)
+        {
+            panelBePopped.transform.Translate(new Vector2(-127.0f, 0.0f));
+            panelIsShown = false;
+        }
+        else if(panelIsShown == false)
+        {
+            panelBePopped.transform.Translate(new Vector2(127.0f, 0.0f));
+            panelIsShown = true;
+        }
+    }
+
     public void OnClick()
     {
         for (int i = 0; i < (int)ObjectType.Ashley; i++)
@@ -68,7 +85,7 @@ public class MapEditor : MonoBehaviour
         var currentButton = EventSystem.current.currentSelectedGameObject;
         var name = currentButton.name;
 
-        if (GameObject.Find(name + "OnMouse(Clone)")) return;
+        if (GameObject.FindWithTag(name)) return;
             Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
     }
 
@@ -105,6 +122,21 @@ public class MapEditor : MonoBehaviour
 
     }
 
+    void OnMouseOver()
+    {
+        Ray ray;
+        RaycastHit hit;
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, 150))
+        {
+            int cellNum = ChangePos2CellNum(hit.point);
+            Vector3 cellPos = ChangeCellNum2Pos(cellNum);
+            Rect rectDrawed = new Rect(cellPos.x - 0.5f , cellPos.z - 0.5f,planeSizeX/gridSizeX ,planeSizeZ/gridSizeZ );
+            
+        }
+    }
+
     void OnMouseDown()
     {
         Ray ray;
@@ -113,24 +145,6 @@ public class MapEditor : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 150))
         {
-            //for(int i = 0; i < 100; i++)
-            //{
-            //    if (isPrefabOnMouse[i] == true)
-            //    {
-            //        if (isPlaced[SetgridcellNum(hit.point)] == false)
-            //        {
-            //            Instantiate(prefabPlaced[i], SetCellnumtoPos(SetgridcellNum(hit.point)), Quaternion.identity);
-            //            isPlaced[SetgridcellNum(hit.point)] = true;
-            //        }
-            //        else if (isPlaced[SetgridcellNum(hit.point)] == true)
-            //        {
-
-            //        }
-            //    }
-            //}
-
-            //var prefabSelected = GameObject.FindWithTag("Barrel");
-
             int cellNum = ChangePos2CellNum(hit.point);
 
             for (int i = 0; i < (int)ObjectType.Ashley; i++)
@@ -139,26 +153,7 @@ public class MapEditor : MonoBehaviour
 
                 if (GameObject.FindWithTag(tagName))
                     Instantiate(prefabsOccupied[i], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            }
-
-            //if (GameObject.FindWithTag("Barrel"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Barrel], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-
-            //else if(GameObject.FindWithTag("Fence"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Fence], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-
-
-            //if (prefabSelected == null /*|| isPlaced[cellno] == true*/) return;
-            //isPlaced[cellno] = true;
-            //if(prefabSelected == GameObject.FindGameObjectWithTag("Barrel"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Barrel], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Fence"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Fence], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Wall1"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Wall1], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            //else if (prefabSelected == GameObject.FindGameObjectWithTag("Wall2"))
-            //    Instantiate(prefabsOccupied[(int)ObjectType.Wall2], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            
+            } 
         }
     }
 
@@ -172,9 +167,9 @@ public class MapEditor : MonoBehaviour
         return objType.ToString();
     }
 
-    public int ChangePos2CellNum(Vector3 Point)
+    public int ChangePos2CellNum(Vector3 point)
     {
-        return (int)Point.x + (int)Point.z * gridSizeZ;
+        return (int)point.x + (int)point.z * gridSizeZ;
     }
 
     //셀 넘버를 포지션으로 변환하는 메소드
