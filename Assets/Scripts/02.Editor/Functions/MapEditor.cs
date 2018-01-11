@@ -25,8 +25,10 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private GameObject[] prefabsOccupied;
 
+    private GameObject prefabSelected;
+
     [SerializeField]
-    private Button[] buttonPrefabs;
+    private GameObject slidingPanel;
 
     [SerializeField]
     private GameObject savingPanel;
@@ -60,35 +62,6 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
-    public void UiSlider()
-    {
-        GameObject panelBePopped = GameObject.Find("MovingPanel");
-        bool panelIsShown = true;
-
-        if (panelIsShown == true)
-        {
-            panelBePopped.transform.Translate(new Vector2(-127.0f, 0.0f));
-            panelIsShown = false;
-        }
-        else if(panelIsShown == false)
-        {
-            panelBePopped.transform.Translate(new Vector2(127.0f, 0.0f));
-            panelIsShown = true;
-        }
-    }
-
-    public void OnClick()
-    {
-        for (int i = 0; i < (int)ObjectType.Ashley; i++)
-            Destroy(GameObject.Find(prefabsOnMouse[i].name + "(Clone)"));
-
-        var currentButton = EventSystem.current.currentSelectedGameObject;
-        var name = currentButton.name;
-
-        if (GameObject.FindWithTag(name)) return;
-            Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
-    }
-
     void Awake()
     {
         gridSizeX = 100;
@@ -102,40 +75,71 @@ public class MapEditor : MonoBehaviour
 
     void Start()
     {
-
+        for (int i = 0; i < gridSizeX + 1; i++)
+        {
+            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0), 1000.0f);
+        }
+        for (int j = 0; j < gridSizeZ + 1; j++)
+        {
+            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0), 1000.0f);
+        }
     }
 
     void Update()
     {
-        for (int i = 0; i < gridSizeX + 1; i++)
-        {
-            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0));
-        }
-        for (int j = 0; j < gridSizeZ + 1; j++)
-        {
-            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0));
-        }
+
     }
 
     void FixedUpdate()
     {
-
+        
     }
 
-    void OnMouseOver()
+    public void UiSlider()
     {
-        Ray ray;
-        RaycastHit hit;
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //GameObject panelBePopped = GameObject.Find("MovingPanel");
+        bool panelIsShown = true;
 
-        if (Physics.Raycast(ray, out hit, 150))
+        if (panelIsShown == true)
         {
-            int cellNum = ChangePos2CellNum(hit.point);
-            Vector3 cellPos = ChangeCellNum2Pos(cellNum);
-            Rect rectDrawed = new Rect(cellPos.x - 0.5f , cellPos.z - 0.5f,planeSizeX/gridSizeX ,planeSizeZ/gridSizeZ );
-            
+            slidingPanel.transform.Translate(new Vector2(-127.0f, 0.0f));
+            panelIsShown = false;
+        }
+        else if (panelIsShown == false)
+        {
+            slidingPanel.transform.Translate(new Vector2(127.0f, 0.0f));
+            panelIsShown = true;
         }
     }
+
+    public void OnClick()
+    {
+        var currentButton = EventSystem.current.currentSelectedGameObject;
+        var name = currentButton.name;
+
+        if (GameObject.FindWithTag(name)) return;
+
+        if (prefabSelected != null)
+            if (prefabSelected.tag != name)
+                Destroy(prefabSelected);
+       
+        prefabSelected = Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
+    }
+
+    //void OnMouseOver()
+    //{
+    //    Ray ray;
+    //    RaycastHit hit;
+    //    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+    //    if (Physics.Raycast(ray, out hit, 150))
+    //    {
+    //        int cellNum = ChangePos2CellNum(hit.point);
+    //        Vector3 cellPos = ChangeCellNum2Pos(cellNum);
+    //        Rect rectDrawed = new Rect(cellPos.x - 0.5f , cellPos.z - 0.5f,planeSizeX/gridSizeX ,planeSizeZ/gridSizeZ );
+
+    //    }
+    //}
 
     void OnMouseDown()
     {
@@ -181,32 +185,26 @@ public class MapEditor : MonoBehaviour
         return new Vector3(startingPoint.x + 1.0f * X + 0.5f, 0.5f, startingPoint.z + 1.0f * Z + 0.5f);    
     }
 
-    int[] FindNeighborGrid(Vector3 pos)
+    int[] FindNeighborGrid(Vector3 pos, TileType[] world)
     {
-        int gridNumber = ChangePos2CellNum(pos);
+        int cellNum = ChangePos2CellNum(pos);
 
-        List<int> neighbors = new List<int>() {1, -1, -gridSizeX, -gridSizeX - 1, -gridSizeX + 1, gridSizeX - 1, gridSizeX, gridSizeX + 1};
-                                       
-        if (gridNumber / gridSizeX == 0 && gridNumber % gridSizeX == 0)  //왼쪽 Edge
-        {
-            //neighbors.RemoveAll( (nb) => { return nb =  });
-                 //delete gridNumber + gridSizeX - 1, gridNumber - 1, girdNumber - gridSizeX - 1, gridNumber - gridSizeX, gridNumber - gridSizeX + 1
-        }
-        else if (gridNumber / gridSizeX == 0 && gridNumber % gridSizeX == gridSizeX - 1)  // 오른쪽 끝 아래
-        {
-                 //delete gridNumber + gridSizeX + 1, gridNumber + 1, girdNumber - gridSizeX - 1, gridNumber - gridSizeX, gridNumber - gridSizeX + 1
-        }
-        else if (gridNumber / gridSizeX == gridSizeZ - 1 && gridNumber % gridSizeX == 0) // 왼쪽 맨 위
-        {
-                 //delete gridNumber + gridSizeX - 1, gridNumber + gridSizeX, gridNumber + gridSizeX + 1, girdNumber - 1, gridNumber - girdSizeX - 1
-        }
-        else if (gridNumber / gridSizeX == gridSizeZ - 1 && gridNumber % gridSizeX == gridSizeX - 1)  // 오른쪽 맨 위
-        {
-                 //delete gridNumber + gridSizeX - 1, gridNumber + gridSizeX, gridNumber + gridSizeX + 1, girdNumber + 1, gridNumber - girdSizeX + 1
-        }
+        List<int> neighbors = new List<int>() {1, -1, -gridSizeX - 1, -gridSizeX, -gridSizeX + 1, gridSizeX - 1, gridSizeX, gridSizeX + 1};
+
+        if (cellNum % gridSizeX == 0)
+            neighbors.RemoveAll((cn) => { return cn == -1 || cn == gridSizeX - 1 || cn == -gridSizeX - 1;});
+        if (cellNum % gridSizeX == gridSizeX - 1)
+            neighbors.RemoveAll((cn) => { return cn == 1 || cn == gridSizeX + 1 || cn == -gridSizeX + 1;});
+        if (cellNum / gridSizeX == 0)
+            neighbors.RemoveAll((cn) => { return cn == -gridSizeX - 1 || cn == -gridSizeX || cn == -gridSizeX + 1;});
+        if (cellNum / gridSizeX == gridSizeZ - 1)
+            neighbors.RemoveAll((cn) => { return cn == gridSizeX - 1  || cn == gridSizeX || cn == gridSizeX + 1 ;});
 
         for (int i = 0; i < neighbors.Count; i++)
-            neighbors[i] += gridNumber;
+        {
+            neighbors[i] += cellNum;
+
+        }
 
         return neighbors.ToArray();
     }

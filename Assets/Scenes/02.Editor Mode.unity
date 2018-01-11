@@ -1844,7 +1844,7 @@ GameObject:
   - component: {fileID: 1041314400}
   - component: {fileID: 1041314399}
   m_Layer: 5
-  m_Name: MovingPanel
+  m_Name: SlidingPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2388,17 +2388,7 @@ MonoBehaviour:
   - {fileID: 1331896146569266, guid: a8dddab008141b74493070b5f80572ca, type: 2}
   - {fileID: 1138463465732040, guid: ad2794322af0f764fbaf6d1b3840c88a, type: 2}
   - {fileID: 1538811815687132, guid: c2402b00a9df5c243b9d0770d3eba48e, type: 2}
-  buttonPrefabs:
-  - {fileID: 1991425229}
-  - {fileID: 1157926150}
-  - {fileID: 2109889842}
-  - {fileID: 1342170351}
-  - {fileID: 1458812843}
-  - {fileID: 1502691110}
-  - {fileID: 1727205586}
-  - {fileID: 1476377753}
-  - {fileID: 1574425302}
-  - {fileID: 1583241195}
+  slidingPanel: {fileID: 1041314397}
   savingPanel: {fileID: 547484354}
   cameraMovementControl: {fileID: 669990438}
 --- !u!1 &1342170349
