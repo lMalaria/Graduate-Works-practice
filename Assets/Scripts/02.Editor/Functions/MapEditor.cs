@@ -139,7 +139,7 @@ public class MapEditor : MonoBehaviour
         //}
     }
 
-    public void MoveUiSlider()
+    public void MoveUISlider()
     {
         //if (panelIsShown == true)
         //{
