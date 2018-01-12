@@ -19,6 +19,8 @@ public class MapEditor : MonoBehaviour
     private int gridSizeX;
     private int gridSizeZ;
 
+    private float timer;
+
     [SerializeField]
     private GameObject[] prefabsOnMouse;
 
@@ -27,11 +29,18 @@ public class MapEditor : MonoBehaviour
 
     private GameObject prefabSelected;
 
-    [SerializeField]
-    private GameObject slidingPanel;
+    private GameObject instantiatedPrefab;
+
+    List<string> uniquePrefabs;
+
+    Dictionary<string, SavingObject> savingObj;
+
+    private int countOfMouseClick;
 
     [SerializeField]
-    private GameObject savingPanel;
+    private GameObject[] panels;
+
+    private bool[] panelsBehaviorsAreDone;
 
     enum TileType
     {
@@ -59,6 +68,13 @@ public class MapEditor : MonoBehaviour
         Aida
     }
 
+    enum PanelType
+    {
+        SlidingPanel = 0,
+        MenuPanel,
+        SavingPanel
+    }
+
     [SerializeField]
     private EditorCamera cameraMovementControl;
 
@@ -71,6 +87,20 @@ public class MapEditor : MonoBehaviour
         planeSizeZ = plane.GetComponent<Renderer>().bounds.size.z;
 
         startingPoint = new Vector3(plane.transform.position.x - planeSizeX / 2, plane.transform.position.y, plane.transform.position.z - planeSizeZ / 2);
+
+        prefabSelected = null;
+
+        instantiatedPrefab = null;
+
+        uniquePrefabs = new List<string>() {"Leon", "Ashley"};
+        countOfMouseClick = 0;
+        savingObj = new Dictionary<string, SavingObject>();
+
+        timer = 3.0f;
+
+        //for (int i = 0; i < (int)PanelType.SavingPanel; i++)
+        //    panelsBehaviorsAreDone[i] = false;
+
     }
 
     void Start()
@@ -87,29 +117,41 @@ public class MapEditor : MonoBehaviour
 
     void Update()
     {
+        timer += Time.deltaTime;
 
+        if (Input.GetMouseButtonDown(1))
+            Destroy(prefabSelected);
+
+        //if (Input.GetKey("escape"))
+        //{
+        //    //if(panelsBehaviorsAreDone[(int)PanelType.MenuPanel] == false && timer > 2.0f)
+        //    //{
+        //    //    panels[(int)PanelType.MenuPanel].SetActive(true);
+        //    //    panelsBehaviorsAreDone[(int)PanelType.MenuPanel] = true;
+        //    //    timer = 0.0f;
+        //    //}
+        //    //else if (panelsBehaviorsAreDone[(int)PanelType.MenuPanel] == true && timer > 2.0f)
+        //    //{
+        //    //    panels[(int)PanelType.MenuPanel].SetActive(false);
+        //    //    panelsBehaviorsAreDone[(int)PanelType.MenuPanel] = false;
+        //    //    timer = 0.0f;
+        //    //}
+        //}
     }
 
-    void FixedUpdate()
+    public void MoveUiSlider()
     {
-        
-    }
+        //if (panelIsShown == true)
+        //{
+        //    slidingPanel.transform.Translate(new Vector2(-127.0f, 0.0f));
+        //    panelIsShown = false;
+        //}
+        //else if (panelIsShown == false)
+        //{
+        //    slidingPanel.transform.Translate(new Vector2(127.0f, 0.0f));
+        //    panelIsShown = true;
+        //}
 
-    public void UiSlider()
-    {
-        //GameObject panelBePopped = GameObject.Find("MovingPanel");
-        bool panelIsShown = true;
-
-        if (panelIsShown == true)
-        {
-            slidingPanel.transform.Translate(new Vector2(-127.0f, 0.0f));
-            panelIsShown = false;
-        }
-        else if (panelIsShown == false)
-        {
-            slidingPanel.transform.Translate(new Vector2(127.0f, 0.0f));
-            panelIsShown = true;
-        }
     }
 
     public void OnClick()
@@ -123,23 +165,8 @@ public class MapEditor : MonoBehaviour
             if (prefabSelected.tag != name)
                 Destroy(prefabSelected);
        
-        prefabSelected = Instantiate(prefabsOnMouse[ConvertString2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
+        prefabSelected = Instantiate(prefabsOnMouse[String2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
     }
-
-    //void OnMouseOver()
-    //{
-    //    Ray ray;
-    //    RaycastHit hit;
-    //    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-    //    if (Physics.Raycast(ray, out hit, 150))
-    //    {
-    //        int cellNum = ChangePos2CellNum(hit.point);
-    //        Vector3 cellPos = ChangeCellNum2Pos(cellNum);
-    //        Rect rectDrawed = new Rect(cellPos.x - 0.5f , cellPos.z - 0.5f,planeSizeX/gridSizeX ,planeSizeZ/gridSizeZ );
-
-    //    }
-    //}
 
     void OnMouseDown()
     {
@@ -149,35 +176,39 @@ public class MapEditor : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 150))
         {
-            int cellNum = ChangePos2CellNum(hit.point);
+            int cellNum = Pos2CellNum(hit.point);
+            Vector3 cellPos = CellNum2Pos(cellNum);
 
-            for (int i = 0; i < (int)ObjectType.Ashley; i++)
+            if (prefabSelected == null) return;
+
+            string tagName = prefabSelected.transform.tag;
+
+            if (GameObject.Find(tagName))
             {
-                string tagName = ConvertObjectType2String((ObjectType)i);
+                instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(tagName)], cellPos, Quaternion.identity);
 
-                if (GameObject.FindWithTag(tagName))
-                    Instantiate(prefabsOccupied[i], ChangeCellNum2Pos(cellNum), Quaternion.identity);
-            } 
+                savingObj.Add(tagName + countOfMouseClick, new SavingObject(countOfMouseClick, instantiatedPrefab, cellPos, Quaternion.identity));
+                countOfMouseClick++;
+            }
         }
     }
 
-    static int ConvertString2ObjectType(string name)
+    static int String2ObjectType(string name)
     {
         return (int)Enum.Parse(typeof(ObjectType), name);
     }
 
-    static string ConvertObjectType2String(ObjectType objType)
+    static string ObjectType2String(ObjectType objType)
     {
         return objType.ToString();
     }
 
-    public int ChangePos2CellNum(Vector3 point)
+    public int Pos2CellNum(Vector3 point)
     {
         return (int)point.x + (int)point.z * gridSizeZ;
     }
 
-    //셀 넘버를 포지션으로 변환하는 메소드
-    public Vector3 ChangeCellNum2Pos(int cellNum)
+    public Vector3 CellNum2Pos(int cellNum)
     {
         int X = cellNum % 100;
         int Z = cellNum / 100;
@@ -187,7 +218,7 @@ public class MapEditor : MonoBehaviour
 
     int[] FindNeighborGrid(Vector3 pos, TileType[] world)
     {
-        int cellNum = ChangePos2CellNum(pos);
+        int cellNum = Pos2CellNum(pos);
 
         List<int> neighbors = new List<int>() {1, -1, -gridSizeX - 1, -gridSizeX, -gridSizeX + 1, gridSizeX - 1, gridSizeX, gridSizeX + 1};
 
@@ -203,7 +234,7 @@ public class MapEditor : MonoBehaviour
         for (int i = 0; i < neighbors.Count; i++)
         {
             neighbors[i] += cellNum;
-
+            if (neighbors[i] < 0 || neighbors[i] > gridSizeX * gridSizeZ) neighbors.RemoveAt(i);
         }
 
         return neighbors.ToArray();
@@ -211,32 +242,39 @@ public class MapEditor : MonoBehaviour
 
     public void SavaData()
     {
+        string jsonToFile = JsonUtility.ToJson(savingObj, true);
+        string filePath = Path.Combine(Application.persistentDataPath, "SaveFile.json");
+        File.WriteAllText(filePath, jsonToFile);
 
         //TreeObstacle treeobstacle = new TreeObstacle(Barrel, SetCellnumtoPos(SetgridcellNum(hit.point)), true);
-
         //string jsonToFile = JsonUtility.ToJson(treeobstacle, true);
-
         //string filePath = Path.Combine(Application.dataPath, "Resources/JsonText.json");
-
         //File.WriteAllText(filePath, jsonToFile);
     }
 
     public void LoadData()
     {
-        string filePath = Path.Combine(Application.dataPath, "Resources/JsonText.json");
-
+        string filePath = Path.Combine(Application.persistentDataPath, "SaveFile.json");
         string jsonFromFile = File.ReadAllText(filePath);
 
-        PlacedObject PlacedObj = JsonUtility.FromJson<PlacedObject>(jsonFromFile);
-
-        Instantiate(PlacedObj.ObjSaved, PlacedObj.ObjPos, Quaternion.identity);
+        //PlacedObject PlacedObj = JsonUtility.FromJson<PlacedObject>(jsonFromFile);
+        //Instantiate(PlacedObj.ObjSaved, PlacedObj.ObjPos, Quaternion.identity);
     }
 }
 
 [System.Serializable]
-public class PlacedObject
+public class SavingObject
 {
-    public int[] index = new int[100];
-    public GameObject ObjSaved;
-    public Vector3 ObjPos;
+    int index;
+    public GameObject savingObject;
+    public Vector3 objectPosition;
+    public Quaternion objectRotation;
+
+    public SavingObject(int index, GameObject savingObject, Vector3 objectPosition, Quaternion objectRotation)
+    {
+        this.index = index;
+        this.savingObject = savingObject;
+        this.objectPosition = objectPosition;
+        this.objectRotation = objectRotation;
+    }
 }
