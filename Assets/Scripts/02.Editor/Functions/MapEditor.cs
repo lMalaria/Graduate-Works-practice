@@ -216,7 +216,7 @@ public class MapEditor : MonoBehaviour
         return new Vector3(startingPoint.x + 1.0f * X + 0.5f, 0.5f, startingPoint.z + 1.0f * Z + 0.5f);    
     }
 
-    int[] FindNeighborGrid(Vector3 pos, TileType[] world)
+    int[] FindNeighborsGrid(Vector3 pos, TileType[] world)
     {
         int cellNum = Pos2CellNum(pos);
 
