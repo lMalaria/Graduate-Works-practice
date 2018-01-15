@@ -19,8 +19,6 @@ public class MapEditor : MonoBehaviour
     private int gridSizeX;
     private int gridSizeZ;
 
-    private float timer;
-
     [SerializeField]
     private GameObject[] prefabsOnMouse;
 
@@ -40,7 +38,7 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private GameObject[] panels;
 
-    private bool[] panelsBehaviorsAreDone;
+    private GameObject destroyedPanel;
 
     enum TileType
     {
@@ -92,15 +90,11 @@ public class MapEditor : MonoBehaviour
 
         instantiatedPrefab = null;
 
+        destroyedPanel = null;
+
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
         countOfMouseClick = 0;
         savingObj = new Dictionary<string, SavingObject>();
-
-        timer = 3.0f;
-
-        //for (int i = 0; i < (int)PanelType.SavingPanel; i++)
-        //    panelsBehaviorsAreDone[i] = false;
-
     }
 
     void Start()
@@ -117,26 +111,18 @@ public class MapEditor : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
-
         if (Input.GetMouseButtonDown(1))
             Destroy(prefabSelected);
 
-        //if (Input.GetKey("escape"))
-        //{
-        //    //if(panelsBehaviorsAreDone[(int)PanelType.MenuPanel] == false && timer > 2.0f)
-        //    //{
-        //    //    panels[(int)PanelType.MenuPanel].SetActive(true);
-        //    //    panelsBehaviorsAreDone[(int)PanelType.MenuPanel] = true;
-        //    //    timer = 0.0f;
-        //    //}
-        //    //else if (panelsBehaviorsAreDone[(int)PanelType.MenuPanel] == true && timer > 2.0f)
-        //    //{
-        //    //    panels[(int)PanelType.MenuPanel].SetActive(false);
-        //    //    panelsBehaviorsAreDone[(int)PanelType.MenuPanel] = false;
-        //    //    timer = 0.0f;
-        //    //}
-        //}
+        if (Input.GetKeyDown("escape"))
+        {
+            if (!GameObject.Find(panels[(int)PanelType.MenuPanel].name + "(Clone)"))
+            {
+                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.zero, Quaternion.identity);
+            }
+            else
+                Destroy(destroyedPanel);
+        }
     }
 
     public void MoveUISlider()
@@ -158,14 +144,13 @@ public class MapEditor : MonoBehaviour
     {
         var currentButton = EventSystem.current.currentSelectedGameObject;
         var name = currentButton.name;
-
-        if (GameObject.FindWithTag(name)) return;
+        var comparedString = "OnMouse(Clone)";
 
         if (prefabSelected != null)
-            if (prefabSelected.tag != name)
-                Destroy(prefabSelected);
-       
-        prefabSelected = Instantiate(prefabsOnMouse[String2ObjectType(name)], new Vector3(0, 0, 0), Quaternion.identity);
+            if(name.Insert(name.Length,comparedString) != prefabSelected.name)
+                   Destroy(prefabSelected);
+
+            prefabSelected = Instantiate(prefabsOnMouse[String2ObjectType(name)], Vector3.zero, Quaternion.identity);
     }
 
     void OnMouseDown()
@@ -181,15 +166,11 @@ public class MapEditor : MonoBehaviour
 
             if (prefabSelected == null) return;
 
-            string tagName = prefabSelected.transform.tag;
+            string manipulateString = "OnMouse(Clone)";
+            string instantiatedObjectName = prefabSelected.name.Remove(prefabSelected.name.Length - manipulateString.Length);
 
-            if (GameObject.Find(tagName))
-            {
-                instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(tagName)], cellPos, Quaternion.identity);
-
-                savingObj.Add(tagName + countOfMouseClick, new SavingObject(countOfMouseClick, instantiatedPrefab, cellPos, Quaternion.identity));
-                countOfMouseClick++;
-            }
+            if (GameObject.Find(prefabSelected.name))
+                instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
         }
     }
 
@@ -208,12 +189,19 @@ public class MapEditor : MonoBehaviour
         return (int)point.x + (int)point.z * gridSizeZ;
     }
 
+    Vector3 LocateToCenter(Vector3 position)
+    {
+        Vector3 positionCenter = new Vector3(0.5f, 0.5f, 0.5f);
+
+        return position + positionCenter;
+    }
+
     public Vector3 CellNum2Pos(int cellNum)
     {
         int X = cellNum % 100;
         int Z = cellNum / 100;
 
-        return new Vector3(startingPoint.x + 1.0f * X + 0.5f, 0.5f, startingPoint.z + 1.0f * Z + 0.5f);    
+        return new Vector3(startingPoint.x + 1.0f * X, 0, startingPoint.z + 1.0f * Z ) + Vector3.one * 0.5f;
     }
 
     int[] FindNeighborsGrid(Vector3 pos, TileType[] world)

@@ -2316,8 +2316,8 @@ MonoBehaviour:
   - {fileID: 1538811815687132, guid: c2402b00a9df5c243b9d0770d3eba48e, type: 2}
   panels:
   - {fileID: 1041314397}
-  - {fileID: 1386903030}
-  - {fileID: 547484354}
+  - {fileID: 1422928655080742, guid: 427022b1e35f2a24186c9354cf42132d, type: 2}
+  - {fileID: 1067351414872038, guid: e22af583199e8824a8a8743591db20ef, type: 2}
   cameraMovementControl: {fileID: 669990438}
 --- !u!1 &1342170349
 GameObject:
