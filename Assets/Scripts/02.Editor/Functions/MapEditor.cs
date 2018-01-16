@@ -31,12 +31,13 @@ public class MapEditor : MonoBehaviour
 
     List<string> uniquePrefabs;
 
-    Dictionary<string, SavingObject> savingObj;
-
-    private int countOfMouseClick;
+    Dictionary<string, SavingObject> savingObjs;
 
     [SerializeField]
     private GameObject[] panels;
+
+    [SerializeField]
+    private Transform canvas;
 
     private GameObject destroyedPanel;
 
@@ -93,19 +94,18 @@ public class MapEditor : MonoBehaviour
         destroyedPanel = null;
 
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
-        countOfMouseClick = 0;
-        savingObj = new Dictionary<string, SavingObject>();
+        savingObjs = new Dictionary<string, SavingObject>();
     }
 
     void Start()
     {
         for (int i = 0; i < gridSizeX + 1; i++)
         {
-            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0), 1000.0f);
+            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0), 10000.0f);
         }
         for (int j = 0; j < gridSizeZ + 1; j++)
         {
-            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0), 1000.0f);
+            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0), 10000.0f);
         }
     }
 
@@ -116,28 +116,17 @@ public class MapEditor : MonoBehaviour
 
         if (Input.GetKeyDown("escape"))
         {
+            if (prefabSelected)
+                Destroy(prefabSelected);
+
             if (!GameObject.Find(panels[(int)PanelType.MenuPanel].name + "(Clone)"))
             {
-                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.zero, Quaternion.identity);
+                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.one, Quaternion.identity);
+                destroyedPanel.transform.parent = canvas.transform;
             }
             else
                 Destroy(destroyedPanel);
         }
-    }
-
-    public void MoveUISlider()
-    {
-        //if (panelIsShown == true)
-        //{
-        //    slidingPanel.transform.Translate(new Vector2(-127.0f, 0.0f));
-        //    panelIsShown = false;
-        //}
-        //else if (panelIsShown == false)
-        //{
-        //    slidingPanel.transform.Translate(new Vector2(127.0f, 0.0f));
-        //    panelIsShown = true;
-        //}
-
     }
 
     public void OnClick()
@@ -153,25 +142,35 @@ public class MapEditor : MonoBehaviour
             prefabSelected = Instantiate(prefabsOnMouse[String2ObjectType(name)], Vector3.zero, Quaternion.identity);
     }
 
+    public void MoveUISlider()
+    {
+        var currentButton = EventSystem.current.currentSelectedGameObject;
+        var position = currentButton.transform.position;
+
+        if (position.x > 20)
+            panels[(int)PanelType.SlidingPanel].transform.Translate(new Vector2(-127.0f, 0.0f));
+        else
+            panels[(int)PanelType.SlidingPanel].transform.Translate(new Vector2(127.0f, 0.0f));
+    }
+
     void OnMouseDown()
     {
-        Ray ray;
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit, 150))
-        {
-            int cellNum = Pos2CellNum(hit.point);
-            Vector3 cellPos = CellNum2Pos(cellNum);
+        if (!Physics.Raycast(ray, out hit, 150)) return;
+        
+        int cellNum = Pos2CellNum(hit.point);
+        Vector3 cellPos = CellNum2Pos(cellNum);
 
-            if (prefabSelected == null) return;
+        if (prefabSelected == null) return;
 
-            string manipulateString = "OnMouse(Clone)";
-            string instantiatedObjectName = prefabSelected.name.Remove(prefabSelected.name.Length - manipulateString.Length);
+        string manipulateString = "OnMouse(Clone)";
+        string instantiatedObjectName = prefabSelected.name.Remove(prefabSelected.name.Length - manipulateString.Length);
 
-            if (GameObject.Find(prefabSelected.name))
-                instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
-        }
+        if (GameObject.Find(prefabSelected.name))
+            instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
+        
     }
 
     static int String2ObjectType(string name)
@@ -191,9 +190,7 @@ public class MapEditor : MonoBehaviour
 
     Vector3 LocateToCenter(Vector3 position)
     {
-        Vector3 positionCenter = new Vector3(0.5f, 0.5f, 0.5f);
-
-        return position + positionCenter;
+        return position + Vector3.one * 0.5f;
     }
 
     public Vector3 CellNum2Pos(int cellNum)
@@ -230,7 +227,7 @@ public class MapEditor : MonoBehaviour
 
     public void SavaData()
     {
-        string jsonToFile = JsonUtility.ToJson(savingObj, true);
+        string jsonToFile = JsonUtility.ToJson(savingObjs, true);
         string filePath = Path.Combine(Application.persistentDataPath, "SaveFile.json");
         File.WriteAllText(filePath, jsonToFile);
 
