@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MapEditor : MonoBehaviour
@@ -31,7 +32,7 @@ public class MapEditor : MonoBehaviour
 
     List<string> uniquePrefabs;
 
-    Dictionary<string, SavingObject> savingObjs;
+    Dictionary<List<string>, List<SavingObject>> savingObjs;
 
     [SerializeField]
     private GameObject[] panels;
@@ -39,7 +40,11 @@ public class MapEditor : MonoBehaviour
     [SerializeField]
     private Transform canvas;
 
+    private float screenWidth;
+
     private GameObject destroyedPanel;
+
+    private float durationOfLine;
 
     enum TileType
     {
@@ -94,18 +99,21 @@ public class MapEditor : MonoBehaviour
         destroyedPanel = null;
 
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
-        savingObjs = new Dictionary<string, SavingObject>();
+        savingObjs = new Dictionary< List<string>, List<SavingObject> >();
+
+        screenWidth = Screen.width;
+        durationOfLine = 10000.0f;
     }
 
     void Start()
     {
         for (int i = 0; i < gridSizeX + 1; i++)
         {
-            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0), 10000.0f);
+            Debug.DrawLine(new Vector3(startingPoint.x, startingPoint.y, startingPoint.z + i), new Vector3(startingPoint.x + planeSizeX, startingPoint.y, startingPoint.z + i), new Color(0, 0, 0), durationOfLine);
         }
         for (int j = 0; j < gridSizeZ + 1; j++)
         {
-            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0), 10000.0f);
+            Debug.DrawLine(new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z), new Vector3(startingPoint.x + j, startingPoint.y, startingPoint.z + planeSizeZ), new Color(0, 0, 0), durationOfLine);
         }
     }
 
@@ -121,7 +129,7 @@ public class MapEditor : MonoBehaviour
 
             if (!GameObject.Find(panels[(int)PanelType.MenuPanel].name + "(Clone)"))
             {
-                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.one, Quaternion.identity);
+                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.zero, Quaternion.identity);
                 destroyedPanel.transform.parent = canvas.transform;
             }
             else
@@ -144,13 +152,12 @@ public class MapEditor : MonoBehaviour
 
     public void MoveUISlider()
     {
-        var currentButton = EventSystem.current.currentSelectedGameObject;
-        var position = currentButton.transform.position;
+        var comparedPanel = GameObject.Find("SliderShowed");
 
-        if (position.x > 20)
-            panels[(int)PanelType.SlidingPanel].transform.Translate(new Vector2(-127.0f, 0.0f));
-        else
+        if(comparedPanel.transform.position.x < canvas.transform.position.x - screenWidth / 2 )
             panels[(int)PanelType.SlidingPanel].transform.Translate(new Vector2(127.0f, 0.0f));
+        else
+            panels[(int)PanelType.SlidingPanel].transform.Translate(new Vector2(-127.0f, 0.0f));
     }
 
     void OnMouseDown()
@@ -245,19 +252,28 @@ public class MapEditor : MonoBehaviour
         //PlacedObject PlacedObj = JsonUtility.FromJson<PlacedObject>(jsonFromFile);
         //Instantiate(PlacedObj.ObjSaved, PlacedObj.ObjPos, Quaternion.identity);
     }
+
+    public void OptionButton()
+    {
+
+    }
+
+    public void ExitButtion()
+    {
+        
+        SceneManager.LoadScene("01.Title");
+    }
 }
 
 [System.Serializable]
-public class SavingObject
+struct SavingObject
 {
-    int index;
     public GameObject savingObject;
     public Vector3 objectPosition;
     public Quaternion objectRotation;
 
-    public SavingObject(int index, GameObject savingObject, Vector3 objectPosition, Quaternion objectRotation)
+    public SavingObject(GameObject savingObject, Vector3 objectPosition, Quaternion objectRotation)
     {
-        this.index = index;
         this.savingObject = savingObject;
         this.objectPosition = objectPosition;
         this.objectRotation = objectRotation;
