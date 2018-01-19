@@ -42,9 +42,13 @@ public class MapEditor : MonoBehaviour
 
     private float screenWidth;
 
-    private GameObject destroyedPanel;
-
     private float durationOfLine;
+
+    [SerializeField]
+    private Camera[] cameras;
+
+    [SerializeField]
+    private Canvas[] canvases;
 
     enum TileType
     {
@@ -79,8 +83,17 @@ public class MapEditor : MonoBehaviour
         SavingPanel
     }
 
-    [SerializeField]
-    private EditorCamera cameraMovementControl;
+    enum CameraType
+    {
+        MainCamera = 0,
+        MenuCamera
+    }
+
+    enum CanvasType
+    {
+        EditorCanvas = 0,
+        MenuCanvas
+    }
 
     void Awake()
     {
@@ -96,13 +109,14 @@ public class MapEditor : MonoBehaviour
 
         instantiatedPrefab = null;
 
-        destroyedPanel = null;
-
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
         savingObjs = new Dictionary< List<string>, List<SavingObject> >();
 
         screenWidth = Screen.width;
         durationOfLine = 10000.0f;
+
+        cameras[(int)CameraType.MenuCamera].enabled = false;
+        canvases[(int)CanvasType.MenuCanvas].enabled = false;
     }
 
     void Start()
@@ -127,13 +141,21 @@ public class MapEditor : MonoBehaviour
             if (prefabSelected)
                 Destroy(prefabSelected);
 
-            if (!GameObject.Find(panels[(int)PanelType.MenuPanel].name + "(Clone)"))
+            if (cameras[(int)CameraType.MainCamera].enabled == true)
             {
-                destroyedPanel = Instantiate(panels[(int)PanelType.MenuPanel], Vector3.zero, Quaternion.identity);
-                destroyedPanel.transform.parent = canvas.transform;
+                cameras[(int)CameraType.MainCamera].enabled = false;
+                cameras[(int)CameraType.MenuCamera].enabled = true;
+                canvases[(int)CanvasType.EditorCanvas].enabled = false;
+                canvases[(int)CanvasType.MenuCanvas].enabled = true;
             }
-            else
-                Destroy(destroyedPanel);
+
+            //else if(cameras[(int)CameraType.MainCamera].enabled == false)
+            //{
+            //    cameras[(int)CameraType.MainCamera].enabled = true;
+            //    cameras[(int)CameraType.MenuCamera].enabled = false;
+            //    canvases[(int)CanvasType.EditorCanvas].enabled = true;
+            //    canvases[(int)CanvasType.MenuCanvas].enabled = false;
+            //}
         }
     }
 
@@ -178,6 +200,17 @@ public class MapEditor : MonoBehaviour
         if (GameObject.Find(prefabSelected.name))
             instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
         
+    }
+
+    public void ResumeButton()
+    {
+        if (cameras[(int)CameraType.MainCamera].enabled == false)
+        {
+            cameras[(int)CameraType.MainCamera].enabled = true;
+            cameras[(int)CameraType.MenuCamera].enabled = false;
+            canvases[(int)CanvasType.EditorCanvas].enabled = true;
+            canvases[(int)CanvasType.MenuCanvas].enabled = false;
+        }
     }
 
     static int String2ObjectType(string name)
