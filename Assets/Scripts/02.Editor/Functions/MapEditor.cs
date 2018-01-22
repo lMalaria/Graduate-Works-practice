@@ -197,14 +197,14 @@ public class MapEditor : MonoBehaviour
         string instantiatedObjectName = prefabSelected.name.Remove(prefabSelected.name.Length - manipulateString.Length);
 
         if (GameObject.Find(prefabSelected.name))
-        {
-            Destroy(prefabSelected);
 
-            if (GameObject.FindWithTag("UI")) return;
+        //Destroy(prefabSelected);
 
-            instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
-            instantiatedUI = Instantiate(rotationUI, cellPos + new Vector3(0, 1, 0), Quaternion.identity);
-        }
+        //if (GameObject.FindWithTag("UI")) return;
+        
+        instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
+        //instantiatedUI = Instantiate(rotationUI, cellPos + new Vector3(0, 1, 0), Quaternion.identity);
+
     }
 
     public void ResumeButton()
@@ -289,7 +289,7 @@ public class MapEditor : MonoBehaviour
 
     public void OptionButton()
     {
-
+        
     }
 
     public void ExitButtion()
