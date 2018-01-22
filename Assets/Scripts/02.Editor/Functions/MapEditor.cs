@@ -44,8 +44,7 @@ public class MapEditor : MonoBehaviour
 
     private float durationOfLine;
 
-    [SerializeField]
-    private Camera[] cameras;
+    private Camera currentCamera;
 
     [SerializeField]
     private Canvas[] canvases;
@@ -83,12 +82,6 @@ public class MapEditor : MonoBehaviour
         SavingPanel
     }
 
-    enum CameraType
-    {
-        MainCamera = 0,
-        MenuCamera
-    }
-
     enum CanvasType
     {
         EditorCanvas = 0,
@@ -115,7 +108,7 @@ public class MapEditor : MonoBehaviour
         screenWidth = Screen.width;
         durationOfLine = 10000.0f;
 
-        cameras[(int)CameraType.MenuCamera].enabled = false;
+        currentCamera = Camera.main;
         canvases[(int)CanvasType.MenuCanvas].enabled = false;
     }
 
@@ -141,21 +134,12 @@ public class MapEditor : MonoBehaviour
             if (prefabSelected)
                 Destroy(prefabSelected);
 
-            if (cameras[(int)CameraType.MainCamera].enabled == true)
-            {
-                cameras[(int)CameraType.MainCamera].enabled = false;
-                cameras[(int)CameraType.MenuCamera].enabled = true;
-                canvases[(int)CanvasType.EditorCanvas].enabled = false;
-                canvases[(int)CanvasType.MenuCanvas].enabled = true;
-            }
+            if (currentCamera != Camera.main) return;
 
-            //else if(cameras[(int)CameraType.MainCamera].enabled == false)
-            //{
-            //    cameras[(int)CameraType.MainCamera].enabled = true;
-            //    cameras[(int)CameraType.MenuCamera].enabled = false;
-            //    canvases[(int)CanvasType.EditorCanvas].enabled = true;
-            //    canvases[(int)CanvasType.MenuCanvas].enabled = false;
-            //}
+            currentCamera.enabled = false;
+
+            canvases[(int)CanvasType.EditorCanvas].enabled = false;
+            canvases[(int)CanvasType.MenuCanvas].enabled = true;
         }
     }
 
@@ -204,13 +188,9 @@ public class MapEditor : MonoBehaviour
 
     public void ResumeButton()
     {
-        if (cameras[(int)CameraType.MainCamera].enabled == false)
-        {
-            cameras[(int)CameraType.MainCamera].enabled = true;
-            cameras[(int)CameraType.MenuCamera].enabled = false;
-            canvases[(int)CanvasType.EditorCanvas].enabled = true;
-            canvases[(int)CanvasType.MenuCanvas].enabled = false;
-        }
+        currentCamera.enabled = true;
+        canvases[(int)CanvasType.EditorCanvas].enabled = true;
+        canvases[(int)CanvasType.MenuCanvas].enabled = false;
     }
 
     static int String2ObjectType(string name)
