@@ -32,7 +32,12 @@ public class MapEditor : MonoBehaviour
 
     List<string> uniquePrefabs;
 
-    Dictionary<List<string>, List<SavingObject>> savingObjs;
+    List<List<SavingObject>> savingObjs;
+
+    [SerializeField]
+    private GameObject rotationUI;
+
+    private GameObject instantiatedUI;
 
     [SerializeField]
     private GameObject[] panels;
@@ -48,6 +53,8 @@ public class MapEditor : MonoBehaviour
 
     [SerializeField]
     private Canvas[] canvases;
+
+    //private GameObject highlightPoint;
 
     enum TileType
     {
@@ -78,7 +85,6 @@ public class MapEditor : MonoBehaviour
     enum PanelType
     {
         SlidingPanel = 0,
-        MenuPanel,
         SavingPanel
     }
 
@@ -103,13 +109,18 @@ public class MapEditor : MonoBehaviour
         instantiatedPrefab = null;
 
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
-        savingObjs = new Dictionary< List<string>, List<SavingObject> >();
+        savingObjs = new List< List<SavingObject> >();
 
         screenWidth = Screen.width;
         durationOfLine = 10000.0f;
 
         currentCamera = Camera.main;
+
+        //메뉴 캔버스는 에디터 모드 시작시 꺼져 있어야 한다.(켜져있으면 겹친다)
         canvases[(int)CanvasType.MenuCanvas].enabled = false;
+
+        //마우스 포지션에 따른 셀 넘버의 위치를 표시 할 녹색 네모
+        //highlightPoint = GameObject.CreatePrimitive(PrimitiveType.Quad);
     }
 
     void Start()
@@ -131,13 +142,17 @@ public class MapEditor : MonoBehaviour
 
         if (Input.GetKeyDown("escape"))
         {
+            //마우스를 따라다니는 UI 프리팹으로 메뉴창으로 넘어 갈 시 마우스를 따라오는 스크립트로 인해서 메뉴에 나타 남으로 파괴
             if (prefabSelected)
                 Destroy(prefabSelected);
-
+            
+            // 현재 카메라가 메인 카메라가 아니라면 리턴
             if (currentCamera != Camera.main) return;
 
+            //현재 카메라(메인 카메라)를 안보이게
             currentCamera.enabled = false;
 
+            //에디터시 필요한 UI 캔버스 사라지고 메뉴 UI를 보여주는 캔버스 나타나게
             canvases[(int)CanvasType.EditorCanvas].enabled = false;
             canvases[(int)CanvasType.MenuCanvas].enabled = true;
         }
@@ -182,8 +197,14 @@ public class MapEditor : MonoBehaviour
         string instantiatedObjectName = prefabSelected.name.Remove(prefabSelected.name.Length - manipulateString.Length);
 
         if (GameObject.Find(prefabSelected.name))
+        {
+            Destroy(prefabSelected);
+
+            if (GameObject.FindWithTag("UI")) return;
+
             instantiatedPrefab = Instantiate(prefabsOccupied[String2ObjectType(instantiatedObjectName)], cellPos, Quaternion.identity);
-        
+            instantiatedUI = Instantiate(rotationUI, cellPos + new Vector3(0, 1, 0), Quaternion.identity);
+        }
     }
 
     public void ResumeButton()
@@ -273,7 +294,6 @@ public class MapEditor : MonoBehaviour
 
     public void ExitButtion()
     {
-        
         SceneManager.LoadScene("01.Title");
     }
 }
