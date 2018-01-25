@@ -109,6 +109,7 @@ public class MapEditor : MonoBehaviour
         instantiatedPrefab = null;
 
         uniquePrefabs = new List<string>() {"Leon", "Ashley"};
+
         savingObjs = new List< List<SavingObject> >();
 
         screenWidth = Screen.width;

@@ -30,7 +30,7 @@ public class PlayerMove : MonoBehaviour {
 
     void Awake()
     {
-        inputDelay = 0.1f;
+        inputDelay = 0.0f;
         forwardVel = 12.0f;
         rotateVel = 100.0f;
         //animator = GetComponent<Animator>();
@@ -60,9 +60,8 @@ public class PlayerMove : MonoBehaviour {
 
     void FixedUpdate()
     {
-
         Run();
-
+ 
     }
 
 
@@ -72,13 +71,10 @@ public class PlayerMove : MonoBehaviour {
 
         if (Mathf.Abs(forwardInput) > inputDelay)
         {
-
             rb.velocity = transform.forward * forwardInput * forwardVel;
-
         }
 
         else
-
         {
 
             rb.velocity = Vector3.zero;
