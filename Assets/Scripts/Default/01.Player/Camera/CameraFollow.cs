@@ -49,21 +49,25 @@ public class CameraFollow : MonoBehaviour {
     [SerializeField]
     private Transform target;
 
-    [SerializeField]
-    private Vector3 offsetPosition;
+    public Vector3 offsetPosition;
 
     [SerializeField]
-    private Space offsetPositionSpace = Space.Self;
+    private Space offsetPositionSpace;
 
     [SerializeField]
-    private bool isLookAt = true;
+    private bool isLookAt;
 
-    void Update()
+    private Vector3 thirdAngle;
+
+    private Vector3 velocity;
+
+    void Awake()
     {
-        Refresh();
+        thirdAngle = offsetPosition;
+        velocity = Vector3.zero;
     }
 
-    void Refresh()
+    void LateUpdate()
     {
         if (target == null) return;
 
@@ -72,12 +76,18 @@ public class CameraFollow : MonoBehaviour {
             transform.position = target.TransformPoint(offsetPosition);
         else
             transform.position = target.position + offsetPosition;
-        
+
         //나중에 필요 하다고 생각하여 만들어 놓은 LookAt 함수 cf)캐릭터 주위를 도는 카메라 생성
         if (isLookAt)
             transform.LookAt(target);
         else
             transform.rotation = target.rotation;
-    }
 
+        if (Input.GetMouseButton(1))
+            offsetPosition = Vector3.Slerp(offsetPosition, new Vector3(0.4f, 1.5f, -1.2f), 5 * Time.deltaTime);//new Vector3(1, 2.2f, -1.85f);
+
+        if (Input.GetMouseButtonUp(1))
+            //offsetPosition = Vector3.Slerp(new Vector3(0.4f, 1.5f, -1.2f), thirdAngle + new Vector3(0,0,-5), 5 * Time.deltaTime);
+            offsetPosition = thirdAngle;
+    }
 }
