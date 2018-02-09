@@ -210,6 +210,7 @@ public class MapEditor : MonoBehaviour
 
     public void ResumeButton()
     {
+        Time.timeScale = 0.0f;
         currentCamera.enabled = true;
         canvases[(int)CanvasType.EditorCanvas].enabled = true;
         canvases[(int)CanvasType.MenuCanvas].enabled = false;

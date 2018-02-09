@@ -2,7 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewPlayer : MonoBehaviour {
+public class SWATPlayerController : MonoBehaviour {
+
+    private enum PlayerStates
+    {
+        Idle = 0,
+        Walk,
+        Run,
+        HoldingPistol,
+        Shoot,
+        Die
+    }
 
     [SerializeField]
     private float inputDelay;
@@ -19,23 +29,22 @@ public class NewPlayer : MonoBehaviour {
     [SerializeField]
     private float turnInput;
 
-    private Camera currentCamera;
-
     Animator animator;
     Quaternion targetRotation;
     Rigidbody rb;
-    ZombieControll zombieControll;
+    ZombieController zombieController;
 
     private GameObject zombieInstance;
 
     [SerializeField]
-    private Texture2D cursorTexture;
+    private GameObject crossHair;
+
+    private Vector2 crossHairPosition;
+
+    public bool isAutoTargetingModeOn;
 
     [SerializeField]
-    private CursorMode cursorMode;
-
-    [SerializeField]
-    private Vector2 hotSpot;
+    private GameObject bloodParticle;
 
     void Awake()
     {
@@ -44,65 +53,55 @@ public class NewPlayer : MonoBehaviour {
         rotateVel = 100.0f;
 
         Cursor.visible = false;
-        currentCamera = Camera.main;
 
         animator = GetComponent<Animator>();
 
-        zombieControll = GetComponent<ZombieControll>();
-        zombieInstance = GameObject.Find("Zombie");
-        cursorMode = CursorMode.Auto;
-        hotSpot = Vector2.zero;
+        zombieController = GetComponent<ZombieController>();
+        zombieInstance = GameObject.Find("CopZombie");
 
+        isAutoTargetingModeOn = false;
 
     }
 
-    //void OnMouseEnter()
-    //{
-    //    Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
-    //}
-
-    //void OnMouseExit()
-    //{
-    //    Cursor.SetCursor(null, Vector2.zero, cursorMode);
-    //}
-
     void Start()
     {
+        crossHair.SetActive(false);
         targetRotation = transform.rotation;
 
         if (GetComponent<Rigidbody>())
             rb = GetComponent<Rigidbody>();
 
-        zombieControll = zombieInstance.GetComponent<ZombieControll>();
+        zombieController = zombieInstance.GetComponent<ZombieController>();
 
     }
 
     void Update()
     {
+        crossHairPosition = new Vector3(zombieInstance.transform.position.x, zombieInstance.transform.position.y);
 
-        print(zombieControll.zombieHP);
+        print("좀비 HP" +" "+zombieController.zombieHP);
+        print("크로스헤어 위치:" + " " + crossHairPosition);
+
+        if(isAutoTargetingModeOn == false)
+            crossHair.transform.position = Input.mousePosition;
+
+        if (isAutoTargetingModeOn == true)
+        {
+            crossHair.transform.position = crossHairPosition;
+        }
 
         forwardInput = Input.GetAxis("Vertical");
         turnInput = -Input.GetAxis("Horizontal");
 
         Turn();
 
-        if(Input.GetKeyDown("f1"))
-            currentCamera.depth = -2;
-        
-
-        if(Input.GetKeyDown("f2"))
-            currentCamera.depth = 0;
-
         if (Input.GetMouseButton(1))
         {
-            Cursor.visible = true;
-            Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+            crossHair.SetActive(true);
 
             animator.SetBool("isWalking", false);
             animator.SetBool("isIdle", false);
             animator.SetBool("isHoldingPistol",true);
-            //cameraFollow.offsetPosition = new Vector3(1,2.2f,-1.85f);
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -112,18 +111,21 @@ public class NewPlayer : MonoBehaviour {
 
                 if (!Physics.Raycast(ray, out hit, 150)) return;
 
-                if(hit.collider.tag == "Enemy")
-                    zombieControll.zombieHP = zombieControll.zombieHP - 5;
+                if (hit.collider.tag == "Enemy")
+                {
+                    zombieController.zombieHP = zombieController.zombieHP - 5;
+                    Instantiate(bloodParticle, hit.point, Quaternion.identity);
+                }
             }
 
         }
 
         if (Input.GetMouseButtonUp(1))
         {
+            crossHair.SetActive(false);
             animator.SetBool("isIdle", true);
             animator.SetBool("isHoldingPistol", false);
             Cursor.visible = false;
-            Cursor.SetCursor(null, Vector2.zero, cursorMode);
         }
 
     }
@@ -131,6 +133,7 @@ public class NewPlayer : MonoBehaviour {
     void FixedUpdate()
     {
         Walk();
+        Run();
     }
 
     void Walk()
@@ -151,6 +154,20 @@ public class NewPlayer : MonoBehaviour {
             rb.velocity = Vector3.zero;
         }
         
+    }
+
+    void Run()
+    {
+        if (Mathf.Abs(forwardInput) > inputDelay && Input.GetKey("left ctrl"))
+        {
+
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isHoldingPistol", false);
+            animator.SetBool("isShooting", false);
+            animator.SetBool("isIdle", false);
+            rb.velocity = transform.forward * forwardInput * forwardVel;
+        }
     }
 
     void Turn()

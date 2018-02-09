@@ -71,7 +71,7 @@ public class CameraFollow : MonoBehaviour {
     {
         if (target == null) return;
 
-        //World 혹은 Self를 선택할 수 있는데 여기서 월드는 아마 쓰지 않을 것 같다 cf)EditorMode에서 쓸 수 있을 것 같아서 따로 만듬
+        //World 혹은 Self를 선택할 수 있는데 여기서 월드는 아마 쓰지 않을 것 같다 cf)나중에 쓸 일이 생길 것 같아서 따로 만듬
         if (offsetPositionSpace == Space.Self)
             transform.position = target.TransformPoint(offsetPosition);
         else
@@ -84,7 +84,7 @@ public class CameraFollow : MonoBehaviour {
             transform.rotation = target.rotation;
 
         if (Input.GetMouseButton(1))
-            offsetPosition = Vector3.Slerp(offsetPosition, new Vector3(0.4f, 1.5f, -1.2f), 5 * Time.deltaTime);//new Vector3(1, 2.2f, -1.85f);
+            offsetPosition = Vector3.Slerp(offsetPosition, new Vector3(0.5f, 1.6f, -1.3f), 5 * Time.deltaTime);//new Vector3(1, 2.2f, -1.85f);
 
         if (Input.GetMouseButtonUp(1))
             //offsetPosition = Vector3.Slerp(new Vector3(0.4f, 1.5f, -1.2f), thirdAngle + new Vector3(0,0,-5), 5 * Time.deltaTime);

@@ -62,9 +62,6 @@ public class SmoothCamera : MonoBehaviour {
         transform.position = temp;
 
         transform.LookAt(car);
-
-
-
     }
 
 	void Start () {
