@@ -24,23 +24,19 @@ public class Manager : MonoBehaviour {
     [SerializeField]
     private Toggle autoTargetMode;
 
-    SWATPlayerController SWATPlayer;
-    private GameObject SWATPlayerInstance;
+    AimManager aimMgr;
 
     void Awake()  {
         allCameras = Camera.allCameras;
 
         isOnGaming = true;
 
-        SWATPlayer = GetComponent<SWATPlayerController>();
-        SWATPlayerInstance = GameObject.Find("SWAT");
+        aimMgr = GameObject.Find("CrossHair").GetComponent<AimManager>();
     }
 
 	void Start () {
-        for (int i = 0; i < Camera.allCamerasCount; i++)
-            print(allCameras[i]);
-
-        SWATPlayer = SWATPlayerInstance.GetComponent<SWATPlayerController>();
+        //for (int i = 0; i < Camera.allCamerasCount; i++)
+        //    print(allCameras[i]);
     }
 	
 	void Update () {
@@ -83,10 +79,10 @@ public class Manager : MonoBehaviour {
     public void MakeAimAutoTargetingModeToggle()
     {
         if(autoTargetMode.isOn)
-            SWATPlayer.isAutoTargetingModeOn = true;
+            aimMgr.isAutoTargetingModeOn = true;
         //else(autoTargetMode.)
         else
-            SWATPlayer.isAutoTargetingModeOn = false;
+            aimMgr.isAutoTargetingModeOn = false;
 
     }
 
