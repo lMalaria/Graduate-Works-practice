@@ -8,8 +8,7 @@ public class AimManager : MonoBehaviour {
     [SerializeField]
     private Image aim;
 
-    [SerializeField]
-    private bool isAiming;
+    public bool isAiming;
 
     public bool isAutoTargetingModeOn;
 
@@ -24,6 +23,10 @@ public class AimManager : MonoBehaviour {
     [SerializeField]
     private GameObject autoTargetingModeTarget;
 
+    private GameObject muzzle;
+
+    private ParticleSystem muzzleFlash;
+
     void Awake()
     {
         Cursor.visible = false;
@@ -33,6 +36,9 @@ public class AimManager : MonoBehaviour {
         isAiming = false;
 
         isAutoTargetingModeOn = false;
+
+        muzzle = GameObject.Find("Muzzle Flash");
+        muzzleFlash = muzzle.GetComponent<ParticleSystem>();
     }
 
 
@@ -61,6 +67,8 @@ public class AimManager : MonoBehaviour {
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    muzzleFlash.Play();
+
                     var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit hit;
 
@@ -100,7 +108,7 @@ public class AimManager : MonoBehaviour {
                 aim.transform.position = zombiePositionToWorld;
 
                 if (Input.GetMouseButtonDown(0))
-                {
+                { 
                     var ray = Camera.main.ScreenPointToRay(zombiePositionToWorld);
                     RaycastHit hit;
 
