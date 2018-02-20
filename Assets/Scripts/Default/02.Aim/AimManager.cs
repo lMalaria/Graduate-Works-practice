@@ -27,6 +27,9 @@ public class AimManager : MonoBehaviour {
 
     private ParticleSystem muzzleFlash;
 
+    [SerializeField]
+    private GameObject bloodEffectOnEnemy;
+
     void Awake()
     {
         Cursor.visible = false;
@@ -75,7 +78,6 @@ public class AimManager : MonoBehaviour {
                     if (!Physics.Raycast(ray, out hit, 150)) return;
 
                     string targetName = hit.transform.name;
-
                     //Debug.Log(targetName);
 
                     if (hit.collider.name == "CopZombie")
@@ -83,13 +85,14 @@ public class AimManager : MonoBehaviour {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
                         //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         copZombieController.IsBeingDamaged(5);
+                        CreateBloodEffectOnEnemy(hit.point);
                         //bombZombieController.IsBeingDamged(10);
-                        //Instantiate(bloodParticle, hit.point, Quaternion.identity);
                     }
 
                     if (hit.collider.name == "BombZombie")
                     {
                         bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
+                        CreateBloodEffectOnEnemy(hit.point);
                         bombZombieController.IsBeingDamged(10);
                     }
 
@@ -113,12 +116,14 @@ public class AimManager : MonoBehaviour {
                     RaycastHit hit;
 
                     if (!Physics.Raycast(ray, out hit, 150)) return;
-
+                    
                     if (hit.collider.name == "CopZombie")
                     {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
+                        Instantiate(bloodEffectOnEnemy, hit.point, Quaternion.identity);
                         //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         copZombieController.IsBeingDamaged(5);
+                        //copZombieController.CreateBloodEffectOnEnemy(Camera.main.ScreenToWorldPoint(hit.point));
                         //bombZombieController.IsBeingDamged(10);
                         //Instantiate(bloodParticle, hit.point, Quaternion.identity);
                     }
@@ -139,4 +144,10 @@ public class AimManager : MonoBehaviour {
         }
 
 	}
+
+    void CreateBloodEffectOnEnemy(Vector3 position)
+    {
+        GameObject bloodEffect = Instantiate(bloodEffectOnEnemy, position, Quaternion.identity);
+        Destroy(bloodEffect, 2.0f);
+    }
 }

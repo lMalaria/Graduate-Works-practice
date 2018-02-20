@@ -33,7 +33,7 @@ public class BombZombieController : MonoBehaviour {
     void Awake()
     {
         zombieState = ZombieState.Idle;
-        runSpeed = 0.5f;
+        runSpeed = 1.3f;
         zombieHP = 100;
 
         player = GameObject.Find("SWAT");
@@ -63,11 +63,15 @@ public class BombZombieController : MonoBehaviour {
         switch(zombieState)
         {
             case ZombieState.Idle:
+                sw.Reset();
                 animator.SetBool("isIdle", true);
                 animator.SetBool("isNoticing", false);
                 animator.SetBool("isRunning", false);
 
                 if (Vector3.Distance(player.transform.position, this.transform.position) < 6)
+                    zombieState = ZombieState.Notice;
+
+                if (zombieHP != 100)
                     zombieState = ZombieState.Notice;
 
                 break;
@@ -94,7 +98,7 @@ public class BombZombieController : MonoBehaviour {
 
                 direction = player.transform.position - this.transform.position;
                 this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-                this.transform.position = Vector3.Slerp(this.transform.position, player.transform.position, runSpeed * Time.deltaTime);
+                this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, runSpeed * Time.deltaTime);
 
                 if (Vector3.Distance(player.transform.position, this.transform.position) < 0.4f)
                     zombieState = ZombieState.Bang;

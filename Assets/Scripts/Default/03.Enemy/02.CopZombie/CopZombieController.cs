@@ -31,6 +31,9 @@ public class CopZombieController : MonoBehaviour {
 
     private Stopwatch sw = new Stopwatch();
 
+    [SerializeField]
+    private GameObject bloodEffectOnEnemy;
+
     void Awake()
     {
         zombieState = ZombieState.Idle;
@@ -175,13 +178,15 @@ public class CopZombieController : MonoBehaviour {
 
                 if (Vector3.Distance(player.transform.position, this.transform.position) < 6)
                     zombieState = ZombieState.Scream;
-            
+
+                if (zombieHP != 100)
+                    zombieState = ZombieState.Scream;
                 break;
 
             case ZombieState.Scream:
 
                 direction = player.transform.position - this.transform.position;
-                this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
+                this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
 
                 animator.SetBool("isIdle", false);
                 animator.SetBool("isScreaming", true);
@@ -208,7 +213,7 @@ public class CopZombieController : MonoBehaviour {
 
                 direction = player.transform.position - this.transform.position;
                 this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-                this.transform.position = Vector3.Slerp(this.transform.position, player.transform.position, walkSpeed * Time.deltaTime);
+                this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, walkSpeed * Time.deltaTime);
 
                 if(Vector3.Distance(player.transform.position, this.transform.position) < 0.7f)
                     zombieState = ZombieState.Bite;
@@ -217,7 +222,7 @@ public class CopZombieController : MonoBehaviour {
 
             case ZombieState.Bite:
                 this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-                this.transform.position = Vector3.Slerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
+                this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
 
                 animator.SetBool("isIdle", false);
                 animator.SetBool("isScreaming", false);
@@ -237,7 +242,7 @@ public class CopZombieController : MonoBehaviour {
                 break;
 
             case ZombieState.Die:
-                this.transform.position = Vector3.Slerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
+                this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
 
                 animator.SetBool("isIdle", false);
                 animator.SetBool("isScreaming", false);
@@ -255,97 +260,4 @@ public class CopZombieController : MonoBehaviour {
         zombieHP -= weaponDmg;
     }
 
-    //IEnumerator CheckZombieStates()
-    //{
-    //    while(!isDead)
-    //    {
-    //        yield return new WaitForSeconds(0.2f);
-
-    //        if (Vector3.Distance(player.transform.position, this.transform.position) < 6 && Vector3.Distance(player.transform.position, this.transform.position) > 0.7f)
-    //            zombieStates = ZombieStates.Chase;
-    //        else if (Vector3.Distance(player.transform.position, this.transform.position) < 0.7f)
-    //            zombieStates = ZombieStates.Bite;
-    //        else
-    //            zombieStates = ZombieStates.Idle;
-
-    //        if (zombieHP <= 0)
-    //            zombieStates = ZombieStates.Die;
-
-    //        //if(zombieStates == ZombieStates.Die)
-    //        //{
-    //        //    changeTime += Time.deltaTime;
-
-    //        //    if(changeTime > 1.0f)
-    //        //    {
-    //        //        zombieStates = ZombieStates.Lie;
-    //        //    }
-    //        //}
-    //    }
-    //}
-
-    //IEnumerator BehaveZombieAction()
-    //{
-    //    while (!isDead)
-    //    { 
-    //        switch(zombieStates)
-    //        {
-    //            case ZombieStates.Idle:
-    //                //가만히 있을 시 자리 그대로
-    //                this.transform.position = this.transform.position;
-
-    //                animator.SetBool("isScreaming", false);
-    //                animator.SetBool("isWalking", false);
-    //                animator.SetBool("isBiting", false);
-    //                break;
-
-    //            //case ZombieStates.Scream:
-    //            //    //플레이어 방향으로 회전
-    //            //    Vector3 direction = player.transform.position - this.transform.position;
-    //            //    direction.y = 0;
-    //            //    this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-    //            //    //플레이어를 향해 소리지름
-    //            //    animator.SetBool("isIdle", false);
-    //            //    animator.SetBool("isWalking", false);
-    //            //    animator.SetBool("isBiting", false);
-    //            //    break;
-
-    //            case ZombieStates.Chase:
-    //                animator.SetBool("isIdle", false);
-    //                animator.SetBool("isScreaming", false);
-    //                animator.SetBool("isWalking", true);
-
-    //                Vector3 direction = player.transform.position - this.transform.position;
-    //                direction.y = 0;
-    //                this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-
-    //                this.transform.position = Vector3.Slerp(this.transform.position, player.transform.position, walkSpeed * Time.deltaTime);
-    //                break;
-
-    //            case ZombieStates.Bite:
-    //                this.transform.position = this.transform.position;
-
-    //                animator.SetBool("isScreaming", false);
-    //                animator.SetBool("isBiting", true);
-    //                animator.SetBool("isWalking", false);
-    //                break;
-
-    //            case ZombieStates.Die:
-    //                this.transform.position = Vector3.Slerp(this.transform.position, this.transform.position, walkSpeed * Time.deltaTime);
-    //                animator.SetBool("isDead", true);
-    //                animator.SetBool("isIdle", false);
-    //                animator.SetBool("isScreaming", false);
-    //                animator.SetBool("isWalking", false);
-    //                animator.SetBool("isBiting", false);
-    //                animator.SetBool("isSuffering", false);
-    //                break;
-
-    //            //case ZombieStates.Lie:
-    //            //    animator.StopPlayback();
-    //            //    break;
-    //        }
-
-    //        yield return null;
-    //    }
-
-    //}
 }

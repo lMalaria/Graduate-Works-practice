@@ -33,15 +33,12 @@ public class DayToNightCycle : MonoBehaviour {
     [SerializeField]
     private Color fogNight = Color.black;
 
-    private int speed;
-
     private bool isNight;
 
     void Start ()
     {
         isNight = true;
         time = 0;
-		speed = 24;
 	}
 	
 	void Update ()
