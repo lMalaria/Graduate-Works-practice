@@ -54,7 +54,6 @@ public class AimManager : MonoBehaviour {
 
         if(isAiming == true)
         {
-            zombiePositionToWorld = Camera.main.WorldToScreenPoint(GameObject.Find("CopZombie").transform.position + new Vector3(0, 0.4f, 0));
 
             if (isAutoTargetingModeOn == false)
             {
@@ -67,22 +66,38 @@ public class AimManager : MonoBehaviour {
 
                     if (!Physics.Raycast(ray, out hit, 150)) return;
 
-                    if (hit.collider.tag == "Enemy")
+                    string targetName = hit.transform.name;
+
+                    //Debug.Log(targetName);
+
+                    if (hit.collider.name == "CopZombie")
                     {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
-                        bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
+                        //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         copZombieController.IsBeingDamaged(5);
-                        bombZombieController.IsBeingDamged(10);
+                        //bombZombieController.IsBeingDamged(10);
                         //Instantiate(bloodParticle, hit.point, Quaternion.identity);
                     }
+
+                    if (hit.collider.name == "BombZombie")
+                    {
+                        bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
+                        bombZombieController.IsBeingDamged(10);
+                    }
+
+                    //if(hit.collider)
+                    //{
+                    //    Debug.Log(targetName);
+                    //}
                 }
             }
 
 
             if (isAutoTargetingModeOn == true)
             {
-                aim.transform.position = zombiePositionToWorld;
+                zombiePositionToWorld = Camera.main.WorldToScreenPoint(GameObject.Find("CopZombie").transform.position + new Vector3(0, 0.4f, 0));
 
+                aim.transform.position = zombiePositionToWorld;
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -91,11 +106,19 @@ public class AimManager : MonoBehaviour {
 
                     if (!Physics.Raycast(ray, out hit, 150)) return;
 
-                    if (hit.collider.tag == "Enemy")
+                    if (hit.collider.name == "CopZombie")
                     {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
+                        //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         copZombieController.IsBeingDamaged(5);
+                        //bombZombieController.IsBeingDamged(10);
                         //Instantiate(bloodParticle, hit.point, Quaternion.identity);
+                    }
+
+                    if (hit.collider.name == "BombZombie")
+                    {
+                        bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
+                        bombZombieController.IsBeingDamged(10);
                     }
                 }
             }
