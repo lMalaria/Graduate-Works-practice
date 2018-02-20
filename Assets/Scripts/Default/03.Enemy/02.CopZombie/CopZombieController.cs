@@ -164,6 +164,7 @@ public class CopZombieController : MonoBehaviour {
         switch (zombieState)
         {
             case ZombieState.Idle:
+                sw.Reset();
                 animator.SetBool("isIdle", true);
                 animator.SetBool("isScreaming", false);
                 animator.SetBool("isWalking", false);
@@ -191,7 +192,7 @@ public class CopZombieController : MonoBehaviour {
 
                 sw.Start();
 
-                if (sw.ElapsedMilliseconds > 4500)
+                if (sw.ElapsedMilliseconds > 3300)
                     zombieState = ZombieState.Chase;
                
                 break;

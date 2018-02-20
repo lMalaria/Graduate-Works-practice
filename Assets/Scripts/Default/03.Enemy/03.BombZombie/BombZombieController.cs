@@ -112,9 +112,6 @@ public class BombZombieController : MonoBehaviour {
                     playerController.IsHurt(100f);
                     Destroy(this.gameObject);
                 }
-
-                
-
                 break;
 
             case ZombieState.Die:
