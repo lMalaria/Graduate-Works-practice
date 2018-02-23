@@ -31,12 +31,8 @@ public class CopZombieController : MonoBehaviour {
 
     private Stopwatch sw = new Stopwatch();
 
-    [SerializeField]
-    private GameObject bloodEffectOnEnemy;
-
     void Awake()
     {
-        zombieState = ZombieState.Idle;
         walkSpeed = 0.1f;
         zombieHP = 100;
 
@@ -45,8 +41,9 @@ public class CopZombieController : MonoBehaviour {
         animator = GetComponent<Animator>();
     }
 
-    void Start() {
-
+    void Start()
+    {
+        zombieState = ZombieState.Idle;
     }
 
     void Update() {
@@ -161,9 +158,6 @@ public class CopZombieController : MonoBehaviour {
         Vector3 direction = player.transform.position - this.transform.position;
         direction.y = 0;
 
-        if (zombieHP <= 0)
-            zombieState = ZombieState.Die;
-
         switch (zombieState)
         {
             case ZombieState.Idle:
@@ -181,10 +175,11 @@ public class CopZombieController : MonoBehaviour {
 
                 if (zombieHP != 100)
                     zombieState = ZombieState.Scream;
+
+                if (zombieHP <= 0)
+                    zombieState = ZombieState.Die;
                 break;
-
             case ZombieState.Scream:
-
                 direction = player.transform.position - this.transform.position;
                 this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
 
@@ -199,9 +194,11 @@ public class CopZombieController : MonoBehaviour {
 
                 if (sw.ElapsedMilliseconds > 3300)
                     zombieState = ZombieState.Chase;
-               
-                break;
 
+                if (zombieHP <= 0)
+                    zombieState = ZombieState.Die;
+
+                break;
             case ZombieState.Chase:
                 sw.Reset();
                 animator.SetBool("isIdle", false);
@@ -217,13 +214,14 @@ public class CopZombieController : MonoBehaviour {
 
                 if(Vector3.Distance(player.transform.position, this.transform.position) < 0.7f)
                     zombieState = ZombieState.Bite;
-                
-                break;
 
+                if (zombieHP <= 0)
+                    zombieState = ZombieState.Die;
+
+                break;
             case ZombieState.Bite:
                 this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(direction), 0.1f);
-                this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
-
+                
                 animator.SetBool("isIdle", false);
                 animator.SetBool("isScreaming", false);
                 animator.SetBool("isWalking", false);
@@ -239,8 +237,10 @@ public class CopZombieController : MonoBehaviour {
                         zombieState = ZombieState.Chase;
                 }
 
-                break;
+                if (zombieHP <= 0)
+                    zombieState = ZombieState.Die;
 
+                break;
             case ZombieState.Die:
                 this.transform.position = Vector3.Lerp(this.transform.position, player.transform.position, 0.0f * Time.deltaTime);
 

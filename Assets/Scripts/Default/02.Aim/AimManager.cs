@@ -14,6 +14,8 @@ public class AimManager : MonoBehaviour {
 
     CopZombieController copZombieController;
     BombZombieController bombZombieController;
+    HalfZombieController halfZombieController;
+    CrawlerController crawlerController;
 
     private Vector3 zombiePositionToWorld;
 
@@ -84,7 +86,7 @@ public class AimManager : MonoBehaviour {
                     {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
                         //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
-                        copZombieController.IsBeingDamaged(5);
+                        copZombieController.IsBeingDamaged(10);
                         CreateBloodEffectOnEnemy(hit.point);
                         //bombZombieController.IsBeingDamged(10);
                     }
@@ -92,8 +94,22 @@ public class AimManager : MonoBehaviour {
                     if (hit.collider.name == "BombZombie")
                     {
                         bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
-                        CreateBloodEffectOnEnemy(hit.point);
                         bombZombieController.IsBeingDamged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
+                    }
+
+                    if (hit.collider.name == "HalfZombie")
+                    {
+                        halfZombieController = hit.collider.gameObject.GetComponent<HalfZombieController>();
+                        halfZombieController.IsBeingDamaged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
+                    }
+
+                    if (hit.collider.name == "Crawler")
+                    {
+                        crawlerController = hit.collider.gameObject.GetComponent<CrawlerController>();
+                        crawlerController.IsBeingDamaged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
                     }
 
                     //if(hit.collider)
@@ -121,17 +137,28 @@ public class AimManager : MonoBehaviour {
                     {
                         copZombieController = hit.collider.gameObject.GetComponent<CopZombieController>();
                         Instantiate(bloodEffectOnEnemy, hit.point, Quaternion.identity);
-                        //bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         copZombieController.IsBeingDamaged(5);
-                        //copZombieController.CreateBloodEffectOnEnemy(Camera.main.ScreenToWorldPoint(hit.point));
-                        //bombZombieController.IsBeingDamged(10);
-                        //Instantiate(bloodParticle, hit.point, Quaternion.identity);
                     }
 
                     if (hit.collider.name == "BombZombie")
                     {
                         bombZombieController = hit.collider.gameObject.GetComponent<BombZombieController>();
                         bombZombieController.IsBeingDamged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
+                    }
+
+                    if (hit.collider.name == "HalfZombie")
+                    {
+                        halfZombieController = hit.collider.gameObject.GetComponent<HalfZombieController>();
+                        halfZombieController.IsBeingDamaged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
+                    }
+
+                    if (hit.collider.name == "Crawler")
+                    {
+                        crawlerController = hit.collider.gameObject.GetComponent<CrawlerController>();
+                        crawlerController.IsBeingDamaged(10);
+                        CreateBloodEffectOnEnemy(hit.point);
                     }
                 }
             }
