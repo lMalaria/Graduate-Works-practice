@@ -55,11 +55,27 @@
      <Compile Include="Assets\Scripts\03.Intro\Intro2.cs" />
      <Compile Include="Assets\Scripts\03.Intro\Intro3.cs" />
      <Compile Include="Assets\Scripts\03.Intro\Intro4.cs" />
+     <Compile Include="Assets\Scripts\Default\01.Player\Camera\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\Camera\PlayerCameraTest.cs" />
-     <Compile Include="Assets\Scripts\Default\01.Player\NewPlayer.cs" />
+     <Compile Include="Assets\Scripts\Default\01.Player\Camera\SmoothCamera.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\PlayerCamera.cs" />
      <Compile Include="Assets\Scripts\Default\01.Player\PlayerMove.cs" />
+     <Compile Include="Assets\Scripts\Default\01.Player\PlayerMove\SWATPlayerController.cs" />
+     <Compile Include="Assets\Scripts\Default\02.Aim\AimManager.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\01.HalfZombie\HalfZombieController.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\01.HalfZombie\WanderTest.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\02.CopZombie\CopZombieController.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\03.BombZombie\BombZombieController.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\04.Crawler\CrawlerController.cs" />
+     <Compile Include="Assets\Scripts\Default\03.Enemy\05.Skeleton\SkeletonController.cs" />
+     <Compile Include="Assets\Scripts\Default\04.Environment\DayToNightCycle.cs" />
+     <Compile Include="Assets\Scripts\Default\Manager\Manager.cs" />
      <Compile Include="Assets\Scripts\Default\etc\Video\PlayVideo.cs" />
+     <Compile Include="Assets\Scripts\FlameThrower.cs" />
+     <None Include="Assets\Blood decal pack\readme.txt" />
+ <Reference Include="Facebook.Unity.Settings">
+ <HintPath>C:/Graduate/Graduate-Works-practice/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -80,6 +96,12 @@
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+ <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.iOS.Extensions.Common">
+ <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
