@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SWATPlayerController : MonoBehaviour {
 
-    private enum PlayerStates
+
+    //에임 매니저에서 받아와야 하기 때문에 public
+    public enum PlayerState
     {
         Idle = 0,
         Walk,
@@ -13,6 +15,8 @@ public class SWATPlayerController : MonoBehaviour {
         Shoot,
         Die
     }
+
+    public PlayerState playerState;
 
     //좀비들의 스크립트에서 불러 올 것이기에 public
     public float playerHP;
@@ -47,6 +51,7 @@ public class SWATPlayerController : MonoBehaviour {
         rotateVel = 100.0f;
 
         animator = GetComponent<Animator>();
+        playerState = PlayerState.Idle;
     }
 
     void Start()
@@ -59,7 +64,7 @@ public class SWATPlayerController : MonoBehaviour {
 
     void Update()
     {
-        print(playerHP);
+        //print(playerHP);
         forwardInput = Input.GetAxis("Vertical");
         turnInput = -Input.GetAxis("Horizontal");
 
@@ -97,6 +102,8 @@ public class SWATPlayerController : MonoBehaviour {
 
     void Walk()
     {
+        playerState = PlayerState.Walk;
+
         if (Mathf.Abs(forwardInput) > inputDelay)
         {
             animator.SetBool("isWalking", true);
@@ -117,6 +124,8 @@ public class SWATPlayerController : MonoBehaviour {
 
     void Run()
     {
+        playerState = PlayerState.Run;
+
         if (Mathf.Abs(forwardInput) > inputDelay && Input.GetKey("left ctrl"))
         {
 
