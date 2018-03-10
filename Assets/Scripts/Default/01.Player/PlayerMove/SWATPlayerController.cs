@@ -126,7 +126,7 @@ public class SWATPlayerController : MonoBehaviour {
     {
         playerState = PlayerState.Run;
 
-        if (Mathf.Abs(forwardInput) > inputDelay && Input.GetKey("left ctrl"))
+        if (Mathf.Abs(forwardInput) > inputDelay && Input.GetKey("left shift"))
         {
 
             animator.SetBool("isRunning", true);
