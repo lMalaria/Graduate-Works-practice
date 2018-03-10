@@ -54,7 +54,7 @@ public class CopZombieController : MonoBehaviour {
         //print("타이머" + changeTime);
         //print("현재 상태" + " " + zombieStates);
         //print("저장된 상태" + " " + savedState);
-        print("경찰 좀비" + zombieHP);
+        //print("경찰 좀비" + zombieHP);
         BehaveZombieFSM();
     }
 

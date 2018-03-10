@@ -48,7 +48,7 @@ public class BombZombieController : MonoBehaviour {
 
 	void Update ()
     {
-        print("자살맨 " + zombieHP);
+        //print("자살맨 " + zombieHP);
         BehaveZombieFSM();
 	}
 

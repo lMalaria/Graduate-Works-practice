@@ -46,7 +46,6 @@ public class HalfZombieController : MonoBehaviour {
 	void Update ()
     {
         HalfZombieFSM();
-        print(slashCount);
 	}
 
     void HalfZombieFSM()
